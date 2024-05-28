@@ -1,0 +1,314 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Linux中配置Anaconda环境(离线)&amp;&amp;Nginx+uWSGI部署Django项目 | Walker' s  Blog</title><meta name="author" content="Walker"><meta name="copyright" content="Walker"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、Linux中配置Anaconda环境&amp;&amp; 利用Nginx + uWSGI部署Django项目（内网服务器）1.1 概述在内网环境中部署大数据训练模型项目，选择使用Anaconda虚拟环境管理项目，模型项目由Django框架编写，选择Nginx + uWSGI进行部署。在本地环境中将Django项目编写完成，要将项目部署到服务器中成功运行，就需要保证服务器的运行环境和本地环境一致">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux中配置Anaconda环境(离线)&amp;&amp;Nginx+uWSGI部署Django项目">
+<meta property="og:url" content="https://lordrule.github.io/2024/05/27/Linux%E4%B8%AD%E9%85%8D%E7%BD%AEAnaconda%E7%8E%AF%E5%A2%83-%E7%A6%BB%E7%BA%BF-Nginx-uWSGI%E9%83%A8%E7%BD%B2Django%E9%A1%B9%E7%9B%AE/index.html">
+<meta property="og:site_name" content="Walker&#39; s  Blog">
+<meta property="og:description" content="一、Linux中配置Anaconda环境&amp;&amp; 利用Nginx + uWSGI部署Django项目（内网服务器）1.1 概述在内网环境中部署大数据训练模型项目，选择使用Anaconda虚拟环境管理项目，模型项目由Django框架编写，选择Nginx + uWSGI进行部署。在本地环境中将Django项目编写完成，要将项目部署到服务器中成功运行，就需要保证服务器的运行环境和本地环境一致">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lordrule.github.io/img/avatar.jpeg">
+<meta property="article:published_time" content="2024-05-27T00:32:12.000Z">
+<meta property="article:modified_time" content="2024-05-28T07:22:08.307Z">
+<meta property="article:author" content="Walker">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lordrule.github.io/img/avatar.jpeg"><link rel="shortcut icon" href="/img/favicon_1.png"><link rel="canonical" href="https://lordrule.github.io/2024/05/27/Linux%E4%B8%AD%E9%85%8D%E7%BD%AEAnaconda%E7%8E%AF%E5%A2%83-%E7%A6%BB%E7%BA%BF-Nginx-uWSGI%E9%83%A8%E7%BD%B2Django%E9%A1%B9%E7%9B%AE/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Walker","link":"链接: ","source":"来源: Walker' s  Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux中配置Anaconda环境(离线)&&Nginx+uWSGI部署Django项目',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-28 15:22:08'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于自己</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/top_img.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Walker' s  Blog"><span class="site-name">Walker' s  Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于自己</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linux中配置Anaconda环境(离线)&amp;&amp;Nginx+uWSGI部署Django项目</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-27T00:32:12.000Z" title="发表于 2024-05-27 08:32:12">2024-05-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-28T07:22:08.307Z" title="更新于 2024-05-28 15:22:08">2024-05-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Linux中配置Anaconda环境(离线)&amp;&amp;Nginx+uWSGI部署Django项目"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="一、Linux中配置Anaconda环境-利用Nginx-uWSGI部署Django项目（内网服务器）"><a href="#一、Linux中配置Anaconda环境-利用Nginx-uWSGI部署Django项目（内网服务器）" class="headerlink" title="一、Linux中配置Anaconda环境&amp;&amp; 利用Nginx + uWSGI部署Django项目（内网服务器）"></a>一、Linux中配置Anaconda环境&amp;&amp; 利用Nginx + uWSGI部署Django项目（内网服务器）</h3><h4 id="1-1-概述"><a href="#1-1-概述" class="headerlink" title="1.1 概述"></a>1.1 概述</h4><p>在内网环境中部署大数据训练模型项目，选择使用Anaconda虚拟环境管理项目，模型项目由Django框架编写，选择Nginx + uWSGI进行部署。在本地环境中将Django项目编写完成，要将项目部署到服务器中成功运行，就需要保证服务器的运行环境和本地环境一致。本地环境系统是Windows，服务器系统CentOS7，环境不相同就不能直接在本地导出aconda虚拟环境，在服务器中加载。此时，可以考虑两种方案：</p>
+<p>方案一：导出本地conda环境依赖包配置目录（requirements.txt）,寻找能够连接外网的centOS7服务器（保证内网和外网的服务器版本和配置差不多类似），在外网服务器中按照requirements.txt下载保存环境依赖包。最后将依赖包利用FTP软件上传至内网服务器中，在服务器中安装配置对应环境。</p>
+<p>方案二：考虑使用Docker容器化技术来部署，在外网环境中下载好Docker镜像内容和对应依赖包，将镜像文件导入到内网环境中（内网环境也需要安装对应版本的Docker）。在本地Django项目目录下创建Dockerfile文件，写入具体配置信息。（读者感兴趣的话，可以自行百度）</p>
+<p>Docker容器技术之前有所涉及，秉着学习新知识和新技术想法，选择方案一，在服务器中搭建Anaconda虚拟环境管理项目，在虚拟环境中部署Django项目，使用Nginx进行外部网络代理服务器访问和uWSGI内网Web服务器配置。下面将详细介绍各个模块的作用：</p>
+<p><strong>WSGI</strong>是一种python专用的web协议（和http类似），WSGI是一种规范，定义使用python编写的web app（Django）与web server（uWSGI）之间接口格式，实现web app 和 web server之间的解耦。</p>
+<p><strong>uWSGI</strong>是一个全功能HTTP的服务器，实现WSGI协议、uwsgi协议、http协议等。主要作用是把http协议转化为WSGI协议，让Python可以进行直接使用。特点为轻量级、易部署，性能比Nginx差很多。</p>
+<p>注： 架构为Nginx+uWSGI+ APP，uWSGI为一个中间件；架构为uWSGI+APP，uWSGI为一个服务器。</p>
+<p><strong>Nginx</strong>是一个web服务器，多用于反向代理、负载均衡、拦截攻击等，而且性能极高。</p>
+<p><strong>Django</strong>是一个python的web框架，框架的作用是处理request和response，所以如何部署Django，Django本身并不关心。</p>
+<p><strong>请求处理整体流程：</strong></p>
+<p><img src="/2024/05/27/Linux%E4%B8%AD%E9%85%8D%E7%BD%AEAnaconda%E7%8E%AF%E5%A2%83-%E7%A6%BB%E7%BA%BF-Nginx-uWSGI%E9%83%A8%E7%BD%B2Django%E9%A1%B9%E7%9B%AE/01.png" alt="01"></p>
+<ul>
+<li>nginx接收到浏览器发送过来的http请求，将包进行解析，分析url</li>
+<li>静态文件请求：就直接访问用户给nginx配置的静态文件目录，直接返回用户请求的静态文件</li>
+<li>动态接口请求：那么nginx就将请求转发给uWSGI，最后到达django处理</li>
+</ul>
+<p><strong>各模块作用：</strong></p>
+<ul>
+<li><strong>nginx：</strong>是对外的服务器，外部浏览器通过url访问nginx，nginx主要处理静态请求</li>
+<li><strong>uWSGI：</strong>是对内的服务器，主要用来处理动态请求</li>
+<li><strong>uwsgi：</strong>是一种web协议，接收到请求之后将包进行处理，处理成wsgi可以接受的格式，并发给wsgi</li>
+<li><strong>wsgi：</strong>是python专用的web协议，根据请求调用应用程序（django）的某个文件，某个文件的某个函数</li>
+<li><strong>django：</strong>是真正干活的，查询数据等资源，把处理的结果再次返回给WSGI， WSGI 将返回值进行打包，打包成uwsgi能够接收的格式</li>
+<li>uwsgi接收wsgi发送的请求，并转发给nginx,nginx最终将返回值返回给浏览器</li>
+</ul>
+<h4 id="1-2、在centOS7中安装和配置Anaconda"><a href="#1-2、在centOS7中安装和配置Anaconda" class="headerlink" title="1.2、在centOS7中安装和配置Anaconda"></a>1.2、在centOS7中安装和配置Anaconda</h4><h5 id="1-2-1-下载Anaconda安装包"><a href="#1-2-1-下载Anaconda安装包" class="headerlink" title="1.2.1 下载Anaconda安装包"></a>1.2.1 下载Anaconda安装包</h5><p><a target="_blank" rel="noopener" href="https://repo.anaconda.com/archive/">Anaconda官网地址</a></p>
+<h5 id="1-2-2-安装Anaconda"><a href="#1-2-2-安装Anaconda" class="headerlink" title="1.2.2 安装Anaconda"></a>1.2.2 安装Anaconda</h5><p>将下载完成的安装包使用FTP软件上传至内网服务器中，以root权限执行以下命令：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash Anaconda3-5.3.0-Linux-x86_64.sh</span><br></pre></td></tr></table></figure>
+
+<p>然后出现以下提示：</p>
+<p><img src="/2024/05/27/Linux%E4%B8%AD%E9%85%8D%E7%BD%AEAnaconda%E7%8E%AF%E5%A2%83-%E7%A6%BB%E7%BA%BF-Nginx-uWSGI%E9%83%A8%E7%BD%B2Django%E9%A1%B9%E7%9B%AE/02.png" alt="02"></p>
+<p>点回车键【Enter】，此时将显示Anaconda的信息，会出现More，继续按Enter</p>
+<p><img src="/2024/05/27/Linux%E4%B8%AD%E9%85%8D%E7%BD%AEAnaconda%E7%8E%AF%E5%A2%83-%E7%A6%BB%E7%BA%BF-Nginx-uWSGI%E9%83%A8%E7%BD%B2Django%E9%A1%B9%E7%9B%AE/03.png" alt="03"></p>
+<p>出现以下界面，输入yes</p>
+<p><img src="/2024/05/27/Linux%E4%B8%AD%E9%85%8D%E7%BD%AEAnaconda%E7%8E%AF%E5%A2%83-%E7%A6%BB%E7%BA%BF-Nginx-uWSGI%E9%83%A8%E7%BD%B2Django%E9%A1%B9%E7%9B%AE/04.png" alt="04"></p>
+<p>输入yes之后会提示让你输入安装路径，默认安装路径为&#x2F;root&#x2F;anaconda3，需要更改路径的话需要自己输入路径，默认安装路径直接敲回车键。</p>
+<p><img src="/2024/05/27/Linux%E4%B8%AD%E9%85%8D%E7%BD%AEAnaconda%E7%8E%AF%E5%A2%83-%E7%A6%BB%E7%BA%BF-Nginx-uWSGI%E9%83%A8%E7%BD%B2Django%E9%A1%B9%E7%9B%AE/05.png" alt="05"></p>
+<p>安装完成之后会提示是否初始化Anaconda3，这里每个版本可能提示的不太一样，但是结果都是添加系统变量的，直接输入yes就可以，之后重新打开一个命令行窗口就可以看到系统名称前面出现（base）字样。</p>
+<p><img src="/2024/05/27/Linux%E4%B8%AD%E9%85%8D%E7%BD%AEAnaconda%E7%8E%AF%E5%A2%83-%E7%A6%BB%E7%BA%BF-Nginx-uWSGI%E9%83%A8%E7%BD%B2Django%E9%A1%B9%E7%9B%AE/06.png" alt="06"></p>
+<p>注：如果你直接跳过【输入NO 】这部设置环境变量的话，后面需要自行环境变量配置。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/profile</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在文件末尾输入anaconda路径位置</span></span><br><span class="line"><span class="built_in">export</span> PATH=/usr/local/anaconda3/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="comment"># 按esc退出编辑，:wq保存退出</span></span><br><span class="line"><span class="comment"># 重新加载环境生效</span></span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure>
+
+<p>在打开新的窗口输入<strong>conda –version</strong>显示版本信息，就说明安装成功，提示报错的话，利用root权限再次尝试，检查环境路径配置是否正确。</p>
+<h5 id="1-2-3-Anaconda环境常用命令"><a href="#1-2-3-Anaconda环境常用命令" class="headerlink" title="1.2.3 Anaconda环境常用命令"></a>1.2.3 Anaconda环境常用命令</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建虚拟环境</span></span><br><span class="line">conda  create  --name  env_name</span><br><span class="line">conda  create  --name  env_name python=3.6 # 创建指定python版本</span><br><span class="line">conda  create  --name  env_name python=3.6 pandas numpy scipy # 创建指定python</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">激活/使用/进入某个虚拟环境</span></span><br><span class="line">conda activate  env_name</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">退出当期环境</span></span><br><span class="line">conda deactivate</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">复制某个虚拟环境</span></span><br><span class="line">conda  create  --name  new_env_name  --clone  old_env_name</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除某个环境</span></span><br><span class="line">conda remove --name env_name --all</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看当前所有环境</span></span><br><span class="line">conda  info  --envs   或者  conda  env  list</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看当前虚拟环境下的所有安装包</span></span><br><span class="line">conda  list  # 需进入该虚拟环境</span><br><span class="line">conda  list  -n  env_name</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装或卸载包(进入虚拟环境之后）</span></span><br><span class="line">conda  install  requests</span><br><span class="line">conda  install  xx=版本号  # 指定版本号</span><br><span class="line">conda  install  xxx -i 源名称或链接 # 指定下载源</span><br><span class="line">conda  uninstall  xxx</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分享虚拟环境</span></span><br><span class="line">conda env export &gt; environment.yml  # 导出当前虚拟环境</span><br><span class="line">conda env create -f environment.yml  # 创建保存的虚拟环境</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">源服务器管理</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">conda当前的源设置在<span class="variable">$HOME</span>/.condarc中，可通过文本查看器查看或者使用命令&gt;conda config --show-sources查看。</span></span><br><span class="line">conda config --show-sources #查看当前使用源</span><br><span class="line">conda config --remove channels 源名称或链接 #删除指定源</span><br><span class="line">conda config --add channels 源名称或链接 #添加指定源</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">示例</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">conda config --add channels  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">conda config --add channels  https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">升级Anaconda需先升级conda</span></span><br><span class="line">conda  update  conda</span><br><span class="line">conda  update  anaconda</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">卸载</span></span><br><span class="line">rm  -rf  anaconda</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">批量导出虚拟环境中的所有组件</span></span><br><span class="line">conda list -e &gt; requirements.txt  # 导出</span><br><span class="line">conda install --yes --file requirements.txt  # 安装</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">pip批量导出环境中的所有组件</span></span><br><span class="line">pip freeze &gt; requirements.txt</span><br><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<p><strong>国内pip源</strong></p>
+<p>阿里云 <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/pypi/simple/">http://mirrors.aliyun.com/pypi/simple/</a></p>
+<p>中国科技大学 <a target="_blank" rel="noopener" href="https://pypi.mirrors.ustc.edu.cn/simple/">https://pypi.mirrors.ustc.edu.cn/simple/</a></p>
+<p>豆瓣(douban) <a target="_blank" rel="noopener" href="http://pypi.douban.com/simple/">http://pypi.douban.com/simple/</a></p>
+<p>清华大学 <a target="_blank" rel="noopener" href="https://pypi.tuna.tsinghua.edu.cn/simple/">https://pypi.tuna.tsinghua.edu.cn/simple/</a></p>
+<p>中国科学技术大学 <a target="_blank" rel="noopener" href="http://pypi.mirrors.ustc.edu.cn/simple/">http://pypi.mirrors.ustc.edu.cn/simple/</a></p>
+<h5 id="1-2-4-安装Django版本和模型训练需要的依赖包"><a href="#1-2-4-安装Django版本和模型训练需要的依赖包" class="headerlink" title="1.2.4 安装Django版本和模型训练需要的依赖包"></a>1.2.4 安装Django版本和模型训练需要的依赖包</h5><p>在本地环境（Windows）中，导出本地环境（Anaconda）依赖包具体版本信息</p>
+<p>打开Anaconda Prompt，输入</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 激活虚拟环境</span></span><br><span class="line">conda activate your_environment </span><br><span class="line"><span class="comment"># 导出环境配置文件</span></span><br><span class="line">conda list -e &gt; requirements.txt</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-2-5-下载Linux系统对应的依赖包并保存"><a href="#1-2-5-下载Linux系统对应的依赖包并保存" class="headerlink" title="1.2.5  下载Linux系统对应的依赖包并保存"></a>1.2.5  下载Linux系统对应的依赖包并保存</h5><p>将requirements.txt上传至能连接外网的服务器（python版本要和内网服务器版本一致，确保不会出现额外的问题），使用以下命令将依赖包下载保存至对应的目录下，【没有安装python3版本的读者，请看以下1.2.6步骤】：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 download -r requirements.txt -d /opt/python-packages/ -i https://mirrors.aliyun.com/pypi/simple --trusted-host=mirrors.aliyun.com</span><br></pre></td></tr></table></figure>
+
+<p>注：内网服务器在安装Anaconda虚拟环境时，会自带一个python最新版本（基本都是python3.x的版本），不知道内网服务器版本可以进入虚拟环境使用命令<strong>python –version</strong>查看对应的python版本，在外网服务器安装对应python版本。</p>
+<h5 id="1-2-6-在centOS安装python3版本（已安装的可以跳过此步）"><a href="#1-2-6-在centOS安装python3版本（已安装的可以跳过此步）" class="headerlink" title="1.2.6 在centOS安装python3版本（已安装的可以跳过此步）"></a>1.2.6 在centOS安装python3版本（已安装的可以跳过此步）</h5><p><strong>注：</strong>内网服务器和联网服务器都需要安装Python3版本，内网服务器安装Python环境是为了运行uWSGI提供基础环境（Anaconda虚拟环境只是为了方便管理Python项目，uWSGI运行在本地环境，需要在内网服务器本地安装Python3环境），联网服务器安装python环境（为了避免出现一些奇怪的问题，尽量保证两个内网和联网Python环境的版本一致）是为了下载内网所需要的依赖包等。</p>
+<p>CentOS7默认安装的是python2.7.5，直接安装python3不冲突</p>
+<p><strong>下载安装依赖</strong>（yum直接安装，联网环境）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make libffi-devel</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>下载保存依赖</strong>，不安装（应对内网环境安装python环境）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install --downloadonly --downloaddir=/path/to/save zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make libffi-devel</span><br></pre></td></tr></table></figure>
+
+<p>以上保存依赖包的方式可能会在安装时出现依赖缺失，后期考虑在本地搭建一个YUM仓库来管理软件包的分发会更加高效和可控。</p>
+<p>下载离线环境点击一下官网地址，下载对应版本通过FTP文件上传至内网环境进行安装。</p>
+<p><a target="_blank" rel="noopener" href="https://www.python.org/ftp/python/">python下载官网</a></p>
+<p>也可以使用以下命令下载（联网环境）:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">官方地址</span></span><br><span class="line">wget https://www.python.org/ftp/python/3.9.0/Python-3.9.0.tgz</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">国内镜像（下载速度更快，建议使用国内镜像）</span></span><br><span class="line">wget http://npm.taobao.org/mirrors/python/3.9.0/Python-3.9.0.tgz</span><br></pre></td></tr></table></figure>
+
+<p><strong>解压安装</strong>，（安装的python版本是自己的情况而定，这里只提供安装路径参考）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">解压压缩包</span></span><br><span class="line">tar -zxvf Python-3.9.0.tgz  </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">进入文件夹</span></span><br><span class="line">cd Python-3.9.0</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">配置安装位置</span></span><br><span class="line">./configure prefix=/usr/local/python3</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装</span></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+
+<p><strong>添加软连接</strong>，用于区分python2和python3</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/local/python3/bin/python3.9 /usr/bin/python3</span><br><span class="line">ln -s /usr/local/python3/bin/pip3.9 /usr/bin/pip3</span><br></pre></td></tr></table></figure>
+
+<p><strong>安装成功</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">出现对应python版本信息就说明安装成功</span></span><br><span class="line">python --version # python2版本</span><br><span class="line">python3 --version  # python3版本</span><br></pre></td></tr></table></figure>
+
+<p>【拓展】<br>软连接：相当于windows的快捷方式，通常我们安装软件后都会在桌面添加一个快捷图片，方便我们快速的操作软件。<br>CentOS7默认python2.7—–软连接对应是python<br>CentOS7新安装python3.9—–软连接命名为python3</p>
+<h5 id="1-2-7在内网环境中安装依赖包"><a href="#1-2-7在内网环境中安装依赖包" class="headerlink" title="1.2.7在内网环境中安装依赖包"></a>1.2.7在内网环境中安装依赖包</h5><p>将外网中的&#x2F;opt&#x2F;python-packages&#x2F;文件打包利用FTP上传至内网环境中，激活你的虚拟环境，进入环境中，使用以下命令进行安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install --no-index --find-links=/opt/python-packages/ -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>--no-index</code> 确保pip不会尝试从在线索引下载包。</li>
+<li><code>--find-links=/path/to/downloaded_packages</code> 指定pip应该从哪个本地目录中查找包。</li>
+<li><code>-r requirements.txt</code> 告诉pip根据<code>requirements.txt</code>文件中的列表来安装包</li>
+</ul>
+<p>注： 提示有对应的依赖没有的报错情况，请根据报错提示下载依赖，<a target="_blank" rel="noopener" href="https://pypi.org/">python依赖包下载官网地址</a></p>
+<p>在Anaconda虚拟环境中，安装完成之后可以使用命令<strong>conda list</strong>查看安装的依赖包情况。</p>
+<h4 id="1-3-在内网服务器安装Nginx-uWSGI"><a href="#1-3-在内网服务器安装Nginx-uWSGI" class="headerlink" title="1.3 在内网服务器安装Nginx + uWSGI"></a>1.3 在内网服务器安装Nginx + uWSGI</h4><p>Nginx的安装过程请查看博主的另一篇文章；</p>
+<p><a href="https://lordrule.github.io/2023/07/14/linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BAspringboot%E9%A1%B9%E7%9B%AE/">Nginx安装过程</a></p>
+<p>uWSGI安装包下载地址：<a target="_blank" rel="noopener" href="https://uwsgi-docs.readthedocs.io/en/latest/Download.html">uwsgi官网</a></p>
+<p>安装uWSGI时需要提前安装完成python3，并且使用root权限安装</p>
+<p>将下载完成的安装包上传至内网服务器中&#x2F;opt目录下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd /opt</span><br><span class="line">tar zxvf uwsgi-2.0.18.tar.gz # 解压文件夹</span><br><span class="line">cd uwsgi-2.0.18</span><br><span class="line">python3 setup.py install</span><br><span class="line">ln -s /usr/local/python3/bin/uwsgi /usr/bin/uwsgi</span><br></pre></td></tr></table></figure>
+
+<p>安装过程中没有出现报错的情况，则说明安装完成，使用命令<strong>uwsgi –version</strong>查看版本信息</p>
+<h4 id="1-4、将Django项目上传至内网服务器"><a href="#1-4、将Django项目上传至内网服务器" class="headerlink" title="1.4、将Django项目上传至内网服务器"></a>1.4、将Django项目上传至内网服务器</h4><p>在django项目启动目录编写 uwsgi.ini 文件（跟manage.py同一级目录）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">[uwsgi]</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">使用 Nginx 连接时使用，Django程序所在服务器地址</span></span><br><span class="line">socket=127.0.0.1:8001</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">直接做 Web 服务器使用，Django程序所在服务器地址(以上两者二选一)</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">http=192.168.63.132:8001</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">项目目录</span></span><br><span class="line">chdir=/usr/local/wsf_app/Django/webApp</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">项目中wsgi.py文件的目录，相对于项目目录</span></span><br><span class="line">wsgi-file=/usr/local/wsf_app/Django/webApp/application/wsgi.py</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">进程数</span></span><br><span class="line">processes=4</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">线程数</span></span><br><span class="line">threads=2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">uwsgi服务器的角色</span></span><br><span class="line">master=True</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">存放进程编号的文件</span></span><br><span class="line">pidfile=/usr/local/wsf_app/Django/webApp/uwsgi/uwsgi.pid</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">日志文件，因为uwsgi可以脱离终端在后台运行，日志看不见。我们以前的runserver是依赖终端的</span></span><br><span class="line">daemonize=/usr/local/wsf_app/Django/webApp/uwsgi/uwsgi.log</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">指定依赖的虚拟环境, 路径到虚拟环境的名字即可(可以命令查看 <span class="built_in">which</span> python)</span></span><br><span class="line">virtualenv=/usr/local/anaconda3/envs/django-env</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在django项目app的目录中编写 wsgi.py 文件（跟settings.py同一级目录）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> django.core.wsgi <span class="keyword">import</span> get_wsgi_application</span><br><span class="line"></span><br><span class="line">os.environ.setdefault(<span class="string">&#x27;DJANGO_SETTINGS_MODULE&#x27;</span>, <span class="string">&#x27;application.settings&#x27;</span>)</span><br><span class="line"></span><br><span class="line">os.environ[<span class="string">&quot;DJANGO_ALLOW_ASYNC_UNSAFE&quot;</span>] = <span class="string">&quot;true&quot;</span></span><br><span class="line"></span><br><span class="line">application = get_wsgi_application()</span><br><span class="line"></span><br><span class="line"><span class="comment"># application 替换成你自己项目名称</span></span><br></pre></td></tr></table></figure>
+
+<p>使用以下命令启动项目</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/wsf_app/Django/webApp/uwsgi/</span><br><span class="line">uwsgi --ini uwsgi.ini</span><br></pre></td></tr></table></figure>
+
+<p>使用以下命令查看相应的进程</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps aux | grep uwsgi</span><br></pre></td></tr></table></figure>
+
+<p>使用以下命令停止项目运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uwsgi --stop uwsgi.pid</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置Nginx文件</strong>，是局域网内电脑能够访问服务器上的Django项目</p>
+<p>找到Nginx配置文件nginx.conf </p>
+<p>添加以下内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 8088;</span><br><span class="line">    server_name 193.168.119.20;</span><br><span class="line">    charset     utf-8;</span><br><span class="line">    #access_log      /wwwroot/destiny/nginx_access.log;</span><br><span class="line">    #error_log       /wwwroot/destiny/nginx_error.log;</span><br><span class="line">    client_max_body_size 75M;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    location /static &#123;</span><br><span class="line">        alias /wwwroot/destiny/destiny/static;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        include     uwsgi_params;</span><br><span class="line">        uwsgi_pass  127.0.0.1:8001;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>按Esc键 :wq 保存退出，使用命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl start nginx # 启动nginx</span><br><span class="line">systemctl restart nginx # 重启nginx</span><br></pre></td></tr></table></figure>
+
+<p>注：在服务器的防火墙中放行8088端口，不然浏览器访问不到Django项目</p>
+<p>至此Django项目部署完成！！！！</p>
+<h4 id="【项目启动问题解析（本人使用的是公司内网的远程SQL-server数据库服务器）】"><a href="#【项目启动问题解析（本人使用的是公司内网的远程SQL-server数据库服务器）】" class="headerlink" title="【项目启动问题解析（本人使用的是公司内网的远程SQL server数据库服务器）】"></a>【项目启动问题解析（本人使用的是公司内网的远程SQL server数据库服务器）】</h4><p>报错内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(pyodbc.Error) (‘01000’, “[01000] [unixODBC][Driver Manager]Can’t open lib ‘ODBC Driver 17 for SQL Server’ : file not found (0) (SQLDriverConnect)”)</span><br></pre></td></tr></table></figure>
+
+<p>报错原因：服务器没有安装ODBC</p>
+<p>解决办法：安装odbc</p>
+<p>下载msodbcsql17-17.3.1.1-1.x86_64.rpm</p>
+<p><a target="_blank" rel="noopener" href="https://packages.microsoft.com/rhel/7/prod/msodbcsql17-17.3.1.1-1.x86_64.rpm">msodbcsql</a></p>
+<p>下载unixODBC-2.3.1-14.el7.x86_64.rpm</p>
+<p><a target="_blank" rel="noopener" href="http://mirror.centos.org/centos/7/os/x86_64/Packages/unixODBC-2.3.1-14.el7.x86_64.rpm">unixODBC</a></p>
+<p>将两个文件上传至内网服务器使用以下命令安装</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh msodbcsql17-17.3.1.1-1.x86_64.rpm unixODBC-2.3.1-14.el7.x86_64.rpm</span><br></pre></td></tr></table></figure>
+
+<p>使用以下命令查看是否安转成功</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">odbcinst -j</span><br><span class="line">cat /etc/odbcinst.ini</span><br></pre></td></tr></table></figure>
+
+<p>查看是否会出现以下类似字样，则说明安装成功</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[ODBC Driver 17 for SQL Server]</span><br><span class="line">Description=Microsoft ODBC Driver 17 for SQL Server</span><br><span class="line">Driver=/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.3.so.1.1</span><br><span class="line">UsageCount=1</span><br></pre></td></tr></table></figure>
+
+<p>问题解决，Django项目成功启动！！！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://LordRule.github.io">Walker</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://lordrule.github.io/2024/05/27/Linux%E4%B8%AD%E9%85%8D%E7%BD%AEAnaconda%E7%8E%AF%E5%A2%83-%E7%A6%BB%E7%BA%BF-Nginx-uWSGI%E9%83%A8%E7%BD%B2Django%E9%A1%B9%E7%9B%AE/">https://lordrule.github.io/2024/05/27/Linux%E4%B8%AD%E9%85%8D%E7%BD%AEAnaconda%E7%8E%AF%E5%A2%83-%E7%A6%BB%E7%BA%BF-Nginx-uWSGI%E9%83%A8%E7%BD%B2Django%E9%A1%B9%E7%9B%AE/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://LordRule.github.io" target="_blank">Walker' s  Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%8A%80%E6%9C%AF/">技术</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/04/17/Linux-CentOS7-%E4%B8%8BRedis5%E5%AE%89%E8%A3%85%E3%80%81%E9%83%A8%E7%BD%B2%E5%92%8C%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8/" title="Linux(CentOS7)下Redis5安装、部署和开机自启动"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Linux(CentOS7)下Redis5安装、部署和开机自启动</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/04/17/Linux-CentOS7-%E4%B8%8BRedis5%E5%AE%89%E8%A3%85%E3%80%81%E9%83%A8%E7%BD%B2%E5%92%8C%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8/" title="Linux(CentOS7)下Redis5安装、部署和开机自启动"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-17</div><div class="title">Linux(CentOS7)下Redis5安装、部署和开机自启动</div></div></a></div><div><a href="/2023/10/10/SpringBoot%E4%B8%AD%E5%88%A9%E7%94%A8Mybatis%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90%E8%BF%9E%E6%8E%A5Oracle%E6%95%B0%E6%8D%AE%E5%BA%93%E6%A0%BC%E5%BC%8F/" title="SpringBoot中利用Mybatis多数据源连接Oracle数据库格式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-10</div><div class="title">SpringBoot中利用Mybatis多数据源连接Oracle数据库格式</div></div></a></div><div><a href="/2023/10/10/%E5%88%A9%E7%94%A8Git%E5%BE%80GitHub%E4%B8%AD%E6%8E%A8%E9%80%81%E6%96%87%E7%AB%A0%E3%80%81%E5%B9%B6%E9%85%8D%E7%BD%AE%E6%9C%AC%E5%9C%B0%E5%9B%BE%E7%89%87%E8%B5%84%E6%BA%90%E5%B1%95%E8%B7%AF%E5%BE%84/" title="利用Git往GitHub中推送文章、并配置本地图片资源展路径"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-10</div><div class="title">利用Git往GitHub中推送文章、并配置本地图片资源展路径</div></div></a></div><div><a href="/2023/07/14/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%8D%9A%E5%AE%A2%E8%AE%B0%E5%BD%95/" title="第一次博客记录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-14</div><div class="title">第一次博客记录</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Walker</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Walkers"><i class="fas fa-heart"></i><span>随遇而安~</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Walkers" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="/1913995179@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到Walker~小世界，喜欢请收藏哟！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81Linux%E4%B8%AD%E9%85%8D%E7%BD%AEAnaconda%E7%8E%AF%E5%A2%83-%E5%88%A9%E7%94%A8Nginx-uWSGI%E9%83%A8%E7%BD%B2Django%E9%A1%B9%E7%9B%AE%EF%BC%88%E5%86%85%E7%BD%91%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">一、Linux中配置Anaconda环境&amp;&amp; 利用Nginx + uWSGI部署Django项目（内网服务器）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2%E3%80%81%E5%9C%A8centOS7%E4%B8%AD%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AEAnaconda"><span class="toc-number">1.2.</span> <span class="toc-text">1.2、在centOS7中安装和配置Anaconda</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-1-%E4%B8%8B%E8%BD%BDAnaconda%E5%AE%89%E8%A3%85%E5%8C%85"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.2.1 下载Anaconda安装包</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-2-%E5%AE%89%E8%A3%85Anaconda"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2.2 安装Anaconda</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-3-Anaconda%E7%8E%AF%E5%A2%83%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">1.2.3.</span> <span class="toc-text">1.2.3 Anaconda环境常用命令</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-4-%E5%AE%89%E8%A3%85Django%E7%89%88%E6%9C%AC%E5%92%8C%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E9%9C%80%E8%A6%81%E7%9A%84%E4%BE%9D%E8%B5%96%E5%8C%85"><span class="toc-number">1.2.4.</span> <span class="toc-text">1.2.4 安装Django版本和模型训练需要的依赖包</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-5-%E4%B8%8B%E8%BD%BDLinux%E7%B3%BB%E7%BB%9F%E5%AF%B9%E5%BA%94%E7%9A%84%E4%BE%9D%E8%B5%96%E5%8C%85%E5%B9%B6%E4%BF%9D%E5%AD%98"><span class="toc-number">1.2.5.</span> <span class="toc-text">1.2.5  下载Linux系统对应的依赖包并保存</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-6-%E5%9C%A8centOS%E5%AE%89%E8%A3%85python3%E7%89%88%E6%9C%AC%EF%BC%88%E5%B7%B2%E5%AE%89%E8%A3%85%E7%9A%84%E5%8F%AF%E4%BB%A5%E8%B7%B3%E8%BF%87%E6%AD%A4%E6%AD%A5%EF%BC%89"><span class="toc-number">1.2.6.</span> <span class="toc-text">1.2.6 在centOS安装python3版本（已安装的可以跳过此步）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-7%E5%9C%A8%E5%86%85%E7%BD%91%E7%8E%AF%E5%A2%83%E4%B8%AD%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96%E5%8C%85"><span class="toc-number">1.2.7.</span> <span class="toc-text">1.2.7在内网环境中安装依赖包</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-%E5%9C%A8%E5%86%85%E7%BD%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E8%A3%85Nginx-uWSGI"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 在内网服务器安装Nginx + uWSGI</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4%E3%80%81%E5%B0%86Django%E9%A1%B9%E7%9B%AE%E4%B8%8A%E4%BC%A0%E8%87%B3%E5%86%85%E7%BD%91%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.4.</span> <span class="toc-text">1.4、将Django项目上传至内网服务器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E3%80%90%E9%A1%B9%E7%9B%AE%E5%90%AF%E5%8A%A8%E9%97%AE%E9%A2%98%E8%A7%A3%E6%9E%90%EF%BC%88%E6%9C%AC%E4%BA%BA%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AF%E5%85%AC%E5%8F%B8%E5%86%85%E7%BD%91%E7%9A%84%E8%BF%9C%E7%A8%8BSQL-server%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%89%E3%80%91"><span class="toc-number">1.5.</span> <span class="toc-text">【项目启动问题解析（本人使用的是公司内网的远程SQL server数据库服务器）】</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/27/Linux%E4%B8%AD%E9%85%8D%E7%BD%AEAnaconda%E7%8E%AF%E5%A2%83-%E7%A6%BB%E7%BA%BF-Nginx-uWSGI%E9%83%A8%E7%BD%B2Django%E9%A1%B9%E7%9B%AE/" title="Linux中配置Anaconda环境(离线)&amp;&amp;Nginx+uWSGI部署Django项目">Linux中配置Anaconda环境(离线)&amp;&amp;Nginx+uWSGI部署Django项目</a><time datetime="2024-05-27T00:32:12.000Z" title="发表于 2024-05-27 08:32:12">2024-05-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/04/17/Linux-CentOS7-%E4%B8%8BRedis5%E5%AE%89%E8%A3%85%E3%80%81%E9%83%A8%E7%BD%B2%E5%92%8C%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8/" title="Linux(CentOS7)下Redis5安装、部署和开机自启动">Linux(CentOS7)下Redis5安装、部署和开机自启动</a><time datetime="2024-04-17T03:35:23.000Z" title="发表于 2024-04-17 11:35:23">2024-04-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/11/GitLab%E8%BF%90%E8%A1%8C%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%83%A8%E7%BD%B2SpringBoot%E9%A1%B9%E7%9B%AE%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B-%E5%86%85%E7%BD%91%E7%8E%AF%E5%A2%83/" title="GitLab运行流水线部署SpringBoot项目详细教程(内网环境)">GitLab运行流水线部署SpringBoot项目详细教程(内网环境)</a><time datetime="2024-01-11T03:50:05.000Z" title="发表于 2024-01-11 11:50:05">2024-01-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/11/Vue3-Vite%E9%A1%B9%E7%9B%AE%E6%89%93%E5%8C%85%E5%90%8E%E4%BD%8E%E7%89%88%E6%9C%AC%E6%B5%8F%E8%A7%88%E5%99%A8%E5%85%BC%E5%AE%B9%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" title="Vue3+Vite项目打包后低版本浏览器兼容问题解决">Vue3+Vite项目打包后低版本浏览器兼容问题解决</a><time datetime="2024-01-11T02:49:01.000Z" title="发表于 2024-01-11 10:49:01">2024-01-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/02/Linux%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%A6%BB%E7%BA%BF%E6%90%AD%E5%BB%BAGitLab%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B/" title="Linux系统中离线搭建GitLab详细教程">Linux系统中离线搭建GitLab详细教程</a><time datetime="2024-01-02T06:12:23.000Z" title="发表于 2024-01-02 14:12:23">2024-01-02</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/top_img.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Walker</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://lordrule.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
